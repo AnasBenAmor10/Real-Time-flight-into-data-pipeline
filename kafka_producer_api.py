@@ -28,31 +28,31 @@ while True:  # Infinite loop for continuous streaming, you may adjust this as ne
 
             for line in data:
                 position = {
-                    'lat': line['lat'],
-                    'lon': line['lng'],
-                    "alt":line['alt'],
-                    "dir":line['dir']
+                    'lat': line.get('lat'),
+                    'lon': line.get('lng'),
+                    'alt': line.get('alt'),
+                    'dir': line.get('dir')
                 }
 
                 d = {
-                    "hex":line['hex'],
-                    "reg_number":line['reg_number'],
-                    "flag":line['flag'],
-                    "position":position,
-                    "speed":line['speed'],
-                    "v_speed":line['v_speed'],
-                    "flight_number":line['flight_number'],
-                    "flight_icao":line['flight_icao'],
-                    "flight_iata":line['flight_iata'],
-                    "dep_icao":line['dep_icao'],
-                    "dep_iata":line['dep_iata'],
-                    "arr_icao":line['arr_icao'],
-                    "arr_iata":line['arr_iata'],
-                    "airline_icao":line['airline_icao'],
-                    "airline_iata":line['airline_iata'],
-                    "aircraft_icao":line['aircraft_icao'],
-                    "updated":line['updated'],
-                    "status":line['status'],
+                    "hex": line.get('hex'),
+                    "reg_number": line.get('reg_number'),
+                    "flag": line.get('flag'),
+                    "position": position,
+                    "speed": line.get('speed'),
+                    "v_speed": line.get('v_speed'),
+                    "flight_number": line.get('flight_number'),
+                    "flight_icao": line.get('flight_icao'),
+                    "flight_iata": line.get('flight_iata'),
+                    "dep_icao": line.get('dep_icao'),
+                    "dep_iata": line.get('dep_iata'),
+                    "arr_icao": line.get('arr_icao'),
+                    "arr_iata": line.get('arr_iata'),
+                    "airline_icao": line.get('airline_icao'),
+                    "airline_iata": line.get('airline_iata'),
+                    "aircraft_icao": line.get('aircraft_icao'),
+                    "updated": line.get('updated'),
+                    "status": line.get('status')
                 }
 
                 producer.send('flight', value=d)

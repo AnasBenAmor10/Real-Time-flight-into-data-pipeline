@@ -67,34 +67,9 @@ json_df = kafka_data.selectExpr("CAST(value AS STRING)") \
 json_df.printSchema()
 
 
-# update data to show real time flight 
-updated_data = json_df.groupBy("flight_icao").agg(
-    max("updated").alias("last_update_time"),
-    first("position.lat").alias("initial_lat"),
-    first("position.lon").alias("initial_lon"),
-    first("position.alt").alias("initial_alt"),
-    first("position.dir").alias("initial_dir"),
-    first("speed").alias("initial_speed"),
-    first("status").alias("initial_status"),
-)
 
-# Join avec le DataFrame initial pour obtenir les mises à jour
-final_result = json_df.join(
-    updated_data,
-    (json_df.flight_icao == updated_data.flight_icao) & (json_df.timestamp == updated_data.last_update_time),
-    "inner"
-).select(
-    json_df["*"],
-    updated_data["last_update_time"],
-    updated_data["initial_lat"],
-    updated_data["initial_lon"],
-    updated_data["initial_alt"],
-    updated_data["initial_dir"],
-    updated_data["initial_speed"],
-    updated_data["status"],
-)
 # Add the filter condition to final_result
-final_result_filtered = final_result \
+final_result_filtered = json_df \
     .filter(col("status") != "landed") \
     .drop("flight_icao", "dep_icao", "arr_icao" , "airline_icao")
 # Show the data read from Kafka on the console
