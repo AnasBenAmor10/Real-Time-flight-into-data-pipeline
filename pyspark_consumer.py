@@ -8,7 +8,7 @@ from pyspark.sql.functions import from_json , col , when , length
 
 
 # Create an Elasticsearch client
-es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200, 'scheme': 'http'}])
+es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': 'http'}])
 
 # Define the index name
 index_name = "flight"
@@ -44,7 +44,8 @@ mapping = {
               }
     }
     }
-
+# Create the Elasticsearch index with the specified mapping of my data
+es.indices.create(index=index_name, body=mapping)
 
 #The structure of the data  received from a Kafka topic 
 schema = StructType([
@@ -116,6 +117,18 @@ query = final_result_filtered \
     .outputMode("append") \
     .format("console") \
     .start()
+
+#write the data into elasticsearch
+data = json_df.writeStream \
+        .format("org.elasticsearch.spark.sql") \
+        .outputMode("append")\
+        .option("es.nodes", "elasticsearch")\
+        .option("es.port", "9200")\
+        .option("es.resource", "flight")\
+        .option("es.nodes.wan.only", "true") \
+        .option("checkpointLocation", "tmp/") \
+        .start()
+
 #await 
 query.awaitTermination()
 
