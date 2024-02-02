@@ -1,84 +1,104 @@
-#import the necessary library
-from pyspark.sql import SparkSession
+
+import json
+
+import math
+
 from pyspark.conf import SparkConf
+from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
-from pyspark.sql.functions import from_json , col , when , length
+from pyspark.sql.functions import *
+from pyspark.sql.functions import from_json, col
+from pyspark import SparkContext
+
+from kafka import KafkaConsumer
+from elasticsearch import Elasticsearch
+from subprocess import check_output
+
+es = Elasticsearch(hosts=['localhost'], port=9200)
+
+topic = "flight-realtime"
+ETH0_IP = check_output(["hostname"]).decode(encoding="utf-8").strip()
+
+SPARK_MASTER_URL = "local[*]"
+SPARK_DRIVER_HOST = ETH0_IP
+
+spark_conf = SparkConf()
+spark_conf.setAll(
+    [
+        ("spark.master", SPARK_MASTER_URL),
+        ("spark.driver.bindAddress", "0.0.0.0"),
+        ("spark.driver.host", SPARK_DRIVER_HOST),
+        ("spark.app.name", "Flight-infos"),
+        ("spark.submit.deployMode", "client"),
+        ("spark.ui.showConsoleProgress", "true"),
+        ("spark.eventLog.enabled", "false"),
+        ("spark.logConf", "false"),
+    ]
+)
+
+def getrows(df, rownums=None):
+    return df.rdd.zipWithIndex().filter(lambda x: x[1] in rownums).map(lambda x: x[0])
+
+if __name__ == "__main__":
+    spark = SparkSession.builder.config(conf=spark_conf).getOrCreate()
+    spark.sparkContext.setLogLevel("ERROR")
+
+    df = (
+        spark.readStream.format("kafka")
+        .option("kafka.bootstrap.servers", "localhost:9092")
+        .option("subscribe", "flight-realtime")
+        .option("enable.auto.commit", "true")
+        .load()
+    )
+    def func_call(df, batch_id):
+        df.selectExpr("CAST(value AS STRING) as json")
+        requests = df.rdd.map(lambda x: x.value).collect()
+        flight = getrows(df,rownums=[0]).collect()
+        for i in flight:
+           #print(i)
+           print(i[1].decode("utf-8"))
+           hex = i[1].decode("utf-8")
+           #print(hex[9:15])
+           dictio = eval(hex)
+           print(type(dictio))
+      
+           print("writing_to_Elasticsearch")
+           es.index(
+                    index="flight-realtime-project",
+                    doc_type="test_doc",
+                    body={
+		            "hex": dictio["hex"],
+		            "reg_number": dictio["reg_number"],
+		            "flag": dictio["flag"],
+		            "lat": dictio["lat"],
+		            "lng": dictio["lng"],
+		            "alt": dictio["alt"],
+		            "dir": dictio["dir"],
+		            "speed": dictio["speed"],
+		            "flight_number": dictio["flight_number"],
+		            "flight_icao": dictio["flight_icao"],
+		            "flight_iata": dictio["flight_iata"],
+		            "dep_icao": dictio["dep_icao"],
+		            "dep_iata": dictio["dep_iata"],
+		            "arr_icao": dictio["arr_icao"],
+		            "arr_iata": dictio["arr_iata"],
+		            "airline_icao": dictio["airline_icao"],
+		            "airline_iata": dictio["airline_iata"],
+		            "aircraft_icao": dictio["aircraft_icao"],
+		            "updated": dictio["updated"],
+		            "status": dictio["status"]
+                    
+                    
+                    }
+                )
+
+           
+    query = df.writeStream \
+    .format('console') \
+    .foreachBatch(func_call) \
+    .trigger(processingTime="30 seconds") \
+    .start().awaitTermination()
 
 
-#The structure of the data  received from a Kafka topic 
-schema = StructType([
-    # Define the schema for kafka message
-    StructField("hex", IntegerType(), True),
-    StructField("reg_number", StringType(), True),
-    StructField("flag", StringType(), True),
-    StructField("position", StructType([
-        StructField("lat", DoubleType(), True),
-        StructField("lon", DoubleType(), True),
-        StructField("alt", DoubleType(), True),
-        StructField("dir", DoubleType(), True)
-    ]), True),
-    StructField("speed", IntegerType(), True),
-    StructField("v_speed", IntegerType(), True),
-    StructField("flight_number", IntegerType(), True),
-    StructField("flight_icao", StringType(), True),
-    StructField("flight_iata", StringType(), True),
-    StructField("dep_icao", StringType(), True),
-    StructField("dep_iata", StringType(), True),
-    StructField("arr_icao", StringType(), True),
-    StructField("arr_iata", StringType(), True),
-    StructField("airline_icao", StringType(), True),
-    StructField("airline_iata", StringType(), True),
-    StructField("aircraft_icao", StringType(), True),
-    StructField("status", StringType(), True)
-    
-])
-
-# Configuration Spark
-spark_conf = SparkConf() \
-    .setAppName("flight_consumer") \
-    .setMaster("local") \
-    .set("spark.executor.memory", "2g") \
-    .set("spark.executor.cores", "2")
-
-
-
-# Create a SparkSession
-spark = SparkSession.builder.config(conf=spark_conf).getOrCreate()
-
-# Set log level to ERROR
-spark.sparkContext.setLogLevel("ERROR")
-
-# Read from the Kafka topic 'flight'
-kafka_data = spark \
-    .readStream \
-    .format("kafka") \
-    .option("kafka.bootstrap.servers", 'localhost:9092') \
-    .option("subscribe", "flight") \
-    .load()
-
-# Deserialize the JSON from the Kafka message
-json_df = kafka_data.selectExpr("CAST(value AS STRING)") \
-    .select(from_json("value", schema).alias("data")) \
-    .select("data.*") \
-    .withColumn("hex", when(length("hex") == 6, col("hex")).otherwise(None))
-
-# Print the schema of the DataFrame
-json_df.printSchema()
-
-# Add the filter condition to final_result
-final_result_filtered = json_df \
-    .filter(col("status") != "landed") \
-    .drop("flight_icao", "dep_icao", "arr_icao" , "airline_icao")
-# Show the data read from Kafka on the console
-query = final_result_filtered \
-    .writeStream \
-    .outputMode("append") \
-    .format("console") \
-    .start()
-
-#await 
-query.awaitTermination()
-
-
-
+  

@@ -26,42 +26,43 @@ else:
 mapping = {
     "mappings": {
         "properties": {
-         "hex": { "type": "integer" },
+         "hex": { "type": "keyword" },
          "reg_number":{"type": "keyword"},
          "flag":{"type":"keyword"},
          "position": {
             "type": "geo_point"
          },
+         "alt":{"type":"float"},
+         "dir":{"type":"float"},
          "speed":{"type":"integer"},
          "v_speed":{"type":"integer"},
-         "flight_number":{"type":"integer"},
+         "flight_number":{"type":"keyword"},
          "flight_iata":{"type":"keyword"},
          "dep_iata":{"type":"keyword"},
          "arr_iata":{"type":"keyword"},
          "airline_iata":{"type":"keyword"},
          "aircraft_icao": { "type": "keyword" },
          "status": { "type": "keyword" },
-              }
+         }
     }
-    }
+}
 # Create the Elasticsearch index with the specified mapping of my data
 es.indices.create(index=index_name, body=mapping)
 
 #The structure of the data  received from a Kafka topic 
 schema = StructType([
-    # Define the schema for kafka message
-    StructField("hex", IntegerType(), True),
+    StructField("hex", StringType(), True),
     StructField("reg_number", StringType(), True),
     StructField("flag", StringType(), True),
     StructField("position", StructType([
         StructField("lat", DoubleType(), True),
         StructField("lon", DoubleType(), True),
-        StructField("alt", DoubleType(), True),
-        StructField("dir", DoubleType(), True)
     ]), True),
+    StructField("alt", DoubleType(), True),
+    StructField("dir", DoubleType(), True), 
     StructField("speed", IntegerType(), True),
     StructField("v_speed", IntegerType(), True),
-    StructField("flight_number", IntegerType(), True),
+    StructField("flight_number", StringType(), True), 
     StructField("flight_icao", StringType(), True),
     StructField("flight_iata", StringType(), True),
     StructField("dep_icao", StringType(), True),
@@ -71,8 +72,7 @@ schema = StructType([
     StructField("airline_icao", StringType(), True),
     StructField("airline_iata", StringType(), True),
     StructField("aircraft_icao", StringType(), True),
-    StructField("status", StringType(), True)
-    
+    StructField("status", StringType(), True),
 ])
 
 # Configuration Spark
@@ -119,18 +119,18 @@ query = final_result_filtered \
     .start()
 
 #write the data into elasticsearch
-data = json_df.writeStream \
+data = final_result_filtered .writeStream \
         .format("org.elasticsearch.spark.sql") \
         .outputMode("append")\
-        .option("es.nodes", "elasticsearch")\
+        .option("es.nodes", "localhost")\
         .option("es.port", "9200")\
         .option("es.resource", "flight")\
-        .option("es.nodes.wan.only", "true") \
-        .option("checkpointLocation", "tmp/") \
+        .option("checkpointLocation", "tmp/")\
         .start()
 
 #await 
 query.awaitTermination()
+data.awaitTermination()
 
 
 

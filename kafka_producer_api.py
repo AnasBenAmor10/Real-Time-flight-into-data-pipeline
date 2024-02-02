@@ -30,8 +30,7 @@ while True:  # Infinite loop for continuous streaming, you may adjust this as ne
                 position = {
                     'lat': line.get('lat'),
                     'lon': line.get('lng'),
-                    'alt': line.get('alt'),
-                    'dir': line.get('dir')
+                    
                 }
 
                 d = {
@@ -39,6 +38,8 @@ while True:  # Infinite loop for continuous streaming, you may adjust this as ne
                     "reg_number": line.get('reg_number'),
                     "flag": line.get('flag'),
                     "position": position,
+                    'alt': line.get('alt'),
+                    'dir': line.get('dir'),
                     "speed": line.get('speed'),
                     "v_speed": line.get('v_speed'),
                     "flight_number": line.get('flight_number'),
