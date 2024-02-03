@@ -119,13 +119,13 @@ query = final_result_filtered \
     .start()
 
 #write the data into elasticsearch
-data = final_result_filtered .writeStream \
+data = final_result_filtered.writeStream \
         .format("org.elasticsearch.spark.sql") \
         .outputMode("append")\
         .option("es.nodes", "localhost")\
         .option("es.port", "9200")\
         .option("es.resource", "flight")\
-        .option("checkpointLocation", "tmp/")\
+        .option("checkpointLocation", "tmp/checkpoint1")\
         .start()
 
 #await 
