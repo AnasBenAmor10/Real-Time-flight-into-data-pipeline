@@ -4,11 +4,6 @@
 In this project, we will use a real-time flight tracking API, Apache Kafka, ElastichSearch and Kibana to create a real-time Flight-info data pipeline and track the flights in real-time. We will use a high-level architecture and
 corresponding configurations that will allow us to create this data pipeline. The end result will be a Kibana dashboard fetching real-time data from ElasticSearch.
 
-![a](https://user-images.githubusercontent.com/80635318/209438803-10e11a67-12c4-4dca-9a13-eeef20a1f8ce.PNG)
-
-![b](https://user-images.githubusercontent.com/80635318/209438806-ba08a62c-046c-4576-ad5b-322a34d57442.PNG)
-
-
 ## Pipeline
 Our project pipeline is as follows:
 
