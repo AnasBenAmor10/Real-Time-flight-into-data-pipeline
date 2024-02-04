@@ -7,48 +7,6 @@ from pyspark.sql.types import *
 from pyspark.sql.functions import from_json , col , when , length
 
 
-# Create an Elasticsearch client
-es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': 'http'}])
-
-# Define the index name
-index_name = "flight"
-
-# Check if the Elasticsearch index exists
-if es.indices.exists(index=index_name):
-    # Delete the index
-    es.indices.delete(index=index_name)
-    print(f"Index '{index_name}' has been deleted.")
-else:
-    print(f"Index '{index_name}' does not exist.")
-
-
-# Define the mapping for Elasticsearch index
-mapping = {
-    "mappings": {
-        "properties": {
-         "hex": { "type": "keyword" },
-         "reg_number":{"type": "keyword"},
-         "flag":{"type":"keyword"},
-         "position": {
-            "type": "geo_point"
-         },
-         "alt":{"type":"float"},
-         "dir":{"type":"float"},
-         "speed":{"type":"integer"},
-         "v_speed":{"type":"integer"},
-         "flight_number":{"type":"keyword"},
-         "flight_iata":{"type":"keyword"},
-         "dep_iata":{"type":"keyword"},
-         "arr_iata":{"type":"keyword"},
-         "airline_iata":{"type":"keyword"},
-         "aircraft_icao": { "type": "keyword" },
-         "status": { "type": "keyword" },
-         }
-    }
-}
-# Create the Elasticsearch index with the specified mapping of my data
-es.indices.create(index=index_name, body=mapping)
-
 #The structure of the data  received from a Kafka topic 
 schema = StructType([
     StructField("hex", StringType(), True),
@@ -103,6 +61,10 @@ json_df = kafka_data.selectExpr("CAST(value AS STRING)") \
     .select(from_json("value", schema).alias("data")) \
     .select("data.*") \
     .withColumn("hex", when(length("hex") == 6, col("hex")).otherwise(None))
+# Convert the 'position' field to the correct format for Elasticsearch
+json_df = json_df.withColumn("position", struct(col("position.lon"), col("position.lat")))
+
+# Rest of your code remains unchanged
 
 # Print the schema of the DataFrame
 json_df.printSchema()
@@ -112,24 +74,27 @@ final_result_filtered = json_df \
     .filter(col("status") != "landed") \
     .drop("flight_icao", "dep_icao", "arr_icao" , "airline_icao")
 # Show the data read from Kafka on the console
-query = final_result_filtered \
-    .writeStream \
-    .outputMode("append") \
-    .format("console") \
-    .start()
+#query = final_result_filtered \
+    #.writeStream \
+    #.outputMode("append") \
+    #.format("console") \
+    #.start()
+filtered_df = final_result_filtered.filter(
+    (col("position.lat").isNotNull()) & (col("position.lon").isNotNull())
+)
 
 #write the data into elasticsearch
-data = final_result_filtered.writeStream \
-        .format("org.elasticsearch.spark.sql") \
-        .outputMode("append")\
-        .option("es.nodes", "localhost")\
-        .option("es.port", "9200")\
-        .option("es.resource", "flight")\
-        .option("checkpointLocation", "tmp/checkpoint1")\
-        .start()
-
+data = filtered_df.writeStream \
+    .format("org.elasticsearch.spark.sql") \
+    .outputMode("update") \
+    .option("es.mapping.id", "reg_number") \
+    .option("es.nodes", "localhost") \
+    .option("es.port", "9200") \
+    .option("es.resource", "flight") \
+    .option("checkpointLocation", "tmp/checkpoint1") \
+    .start()
 #await 
-query.awaitTermination()
+#query.awaitTermination()
 data.awaitTermination()
 
 

@@ -30,7 +30,6 @@ while True:  # Infinite loop for continuous streaming, you may adjust this as ne
                 position = {
                     'lat': line.get('lat'),
                     'lon': line.get('lng'),
-                    
                 }
 
                 d = {
@@ -58,7 +57,7 @@ while True:  # Infinite loop for continuous streaming, you may adjust this as ne
 
                 producer.send('flight', value=d)
                 print(d)
-                time.sleep(1)
+                time.sleep(0.0005)
                 
             
         else:
@@ -69,4 +68,4 @@ while True:  # Infinite loop for continuous streaming, you may adjust this as ne
         print(f'An error occurred: {str(e)}')
 
   
-    time.sleep(60) 
+    time.sleep(1) 
