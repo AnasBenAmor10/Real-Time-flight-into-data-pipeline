@@ -1,5 +1,4 @@
-# Real-Time-flight-into-data-pipeline
-# Creating a Real-Time Flight-info Data Pipeline with Kafka, Apache Spark, Elasticsearch and Kibana
+# Real-Time-flight-into-data-pipeline with Kafka, Apache Spark, Elasticsearch and Kibana
 
 In this project, we will use a real-time flight tracking API, Apache Kafka, ElastichSearch and Kibana to create a real-time Flight-info data pipeline and track the flights in real-time. We will use a high-level architecture and
 corresponding configurations that will allow us to create this data pipeline. The end result will be a Kibana dashboard fetching real-time data from ElasticSearch.

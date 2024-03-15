@@ -91,7 +91,7 @@ data = filtered_df.writeStream \
     .option("es.nodes", "localhost") \
     .option("es.port", "9200") \
     .option("es.resource", "flight") \
-    .option("checkpointLocation", "tmp/checkpoint1") \
+    .option("checkpointLocation", "tmp/checkpoint2") \
     .start()
 #await 
 #query.awaitTermination()

@@ -68,4 +68,4 @@ while True:  # Infinite loop for continuous streaming, you may adjust this as ne
         print(f'An error occurred: {str(e)}')
 
   
-    time.sleep(1) 
+    time.sleep(60) 
