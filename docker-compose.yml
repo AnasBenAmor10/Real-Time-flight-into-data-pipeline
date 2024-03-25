@@ -7,7 +7,7 @@ services:
       ports:
         - "2180:2181"
       environment:
-        - ALLOW_ANONYMOUS_LOGIN=yes
+        - ALLOW_ANONYMOUS_LOGIN=yes 
       networks:
         - flight_network
   kafka:
@@ -18,41 +18,104 @@ services:
         - "9093:9093"
       environment:
         - KAFKA_BROKER_ID=1
-        - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-        - ALLOW_PLAINTEXT_LISTENER=yes
-        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
-        - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
-        - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
-        - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+        - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181  # Kafka use Zookeeper to manager  and coordinate kafka Broker 
+        - ALLOW_PLAINTEXT_LISTENER=yes # Accept connections without SSL/TLS encryption it's usefull for development and Testing 
+        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT # it Specifies taht both Client and External will use unecypted (palintext) Communication
+        - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093 # PORT 9092 for CLient and 9093 for External (internal Communication Between Kafka and other Servives into Same )
+        - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093 #Addresses that Client can use to Connect to kafka
+        - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT # indicate that brokers Communicate with each other using internal network listener(CLient)
       depends_on:
-        - zookeeper
+        - zookeeper #Start Zookeeper before starting Kafka Container
       networks:
         - flight_network
 
-  
-  spark-master:
-    build: .
-    command: bin/spark-class org.apache.spark.deploy.master.Master
+  elasticsearch:
+    container_name: elasticsearch-cntr
+    image: bitnami/elasticsearch:8.8.2
+    environment:
+      - cluster.name=kafka-cluster
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data:rw
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
-      - "9090:8080"
-      - "7077:7077"
+      - "9200:9200"
+      - "9300:9300"
+    depends_on:
+      - kafka
+    stdin_open: true
+    tty: true
+    restart: always
+    networks:
+      - flight_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "50"
+    healthcheck:
+      test: curl -u elastic:elastic -s -f elasticsearch-cntr:9200/_cat/health >/dev/null || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  kibana:
+    container_name: kibana-cntr
+    image: bitnami/kibana:8.8.2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    stdin_open: true
+    tty: true
+    restart: always
+    networks:
+      - flight_network
+    links: ['elasticsearch']
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "50"
+    healthcheck:
+      test: curl --fail http://kibana-cntr:5601 || exit 1
+      interval: 30s
+      retries: 3
+      timeout: 10s
+
+  spark-master:
+    build: .   #Build image Docker Via Docker file in the same repo
+    command: bin/spark-class org.apache.spark.deploy.master.Master  #Lunch Spark Master
+    ports:
+      - "9090:8080"  # 8080 Port of Container Spark Master and 9090 Port of Hote
+      - "7077:7077" #Communication Between Spark master and Spark Worker via Port 7077
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: '2'  #Limit ressources of Container -> CPU à 2 coeurs pour Contôler les ressources
     networks:
-      - flight_network
+      - flight_network 
 
   spark-worker-1:
     build: .
-    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077  # Lunch Spark Worker
     depends_on:
-      - spark-master
+      - spark-master  #Spark master should be lunch before Spark worker 
     environment:
       SPARK_MODE: worker
-      SPARK_WORKER_CORES: 2
-      SPARK_WORKER_MEMORY: 2g
-      SPARK_MASTER_URL: spark://spark-master:7077
+      SPARK_WORKER_CORES: 2  #Use 2 Cores of CPU 
+      SPARK_WORKER_MEMORY: 2g  #Limit Memory of Worker to 2 GigaOctets
+      SPARK_MASTER_URL: spark://spark-master:7077 # Give a Worker the URL that make the communication with the master
     networks:
       - flight_network
 
@@ -60,3 +123,6 @@ networks:
   flight_network:
     driver: bridge
 
+volumes:
+  elasticsearch_data:
+    driver: local
