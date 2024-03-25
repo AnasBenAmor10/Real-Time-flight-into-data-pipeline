@@ -64,8 +64,6 @@ json_df = kafka_data.selectExpr("CAST(value AS STRING)") \
 # Convert the 'position' field to the correct format for Elasticsearch
 json_df = json_df.withColumn("position", struct(col("position.lon"), col("position.lat")))
 
-# Rest of your code remains unchanged
-
 # Print the schema of the DataFrame
 json_df.printSchema()
 
