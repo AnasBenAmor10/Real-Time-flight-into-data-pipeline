@@ -5,7 +5,7 @@ services:
       restart: always
       image: docker.io/bitnami/zookeeper:3.8
       ports:
-        - "2180:2181"
+        - "2181:2181"
       environment:
         - ALLOW_ANONYMOUS_LOGIN=yes 
       networks:
@@ -18,14 +18,14 @@ services:
         - "9093:9093"
       environment:
         - KAFKA_BROKER_ID=1
-        - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181  # Kafka use Zookeeper to manager  and coordinate kafka Broker 
-        - ALLOW_PLAINTEXT_LISTENER=yes # Accept connections without SSL/TLS encryption it's usefull for development and Testing 
-        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT # it Specifies taht both Client and External will use unecypted (palintext) Communication
-        - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093 # PORT 9092 for CLient and 9093 for External (internal Communication Between Kafka and other Servives into Same )
-        - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093 #Addresses that Client can use to Connect to kafka
-        - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT # indicate that brokers Communicate with each other using internal network listener(CLient)
+        - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181  
+        - ALLOW_PLAINTEXT_LISTENER=yes
+        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+        - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+        - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+        - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
       depends_on:
-        - zookeeper #Start Zookeeper before starting Kafka Container
+        - zookeeper
       networks:
         - flight_network
 
@@ -92,7 +92,9 @@ services:
       interval: 30s
       retries: 3
       timeout: 10s
+      
 
+  
   spark-master:
     build: .   #Build image Docker Via Docker file in the same repo
     command: bin/spark-class org.apache.spark.deploy.master.Master  #Lunch Spark Master
@@ -122,7 +124,6 @@ services:
 networks:
   flight_network:
     driver: bridge
-
 volumes:
   elasticsearch_data:
-    driver: local
+    driver: local    

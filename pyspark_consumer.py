@@ -1,7 +1,6 @@
 #import the necessary library
 from pyspark.sql import SparkSession
 from pyspark.conf import SparkConf
-from elasticsearch import Elasticsearch
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from pyspark.sql.functions import from_json , col , when , length
@@ -52,7 +51,7 @@ spark.sparkContext.setLogLevel("ERROR")
 kafka_data = spark \
     .readStream \
     .format("kafka") \
-    .option("kafka.bootstrap.servers", 'localhost:9092') \
+    .option("kafka.bootstrap.servers", 'kafka:9092') \
     .option("subscribe", "flight") \
     .load()
 
@@ -86,14 +85,16 @@ data = filtered_df.writeStream \
     .format("org.elasticsearch.spark.sql") \
     .outputMode("update") \
     .option("es.mapping.id", "reg_number") \
-    .option("es.nodes", "localhost") \
+    .option("es.nodes", "elasticsearch") \
     .option("es.port", "9200") \
-    .option("es.resource", "flight") \
+    .option("es.nodes.wan.only","true") \
     .option("checkpointLocation", "tmp/checkpoint2") \
+    .option("es.resource", "flight")\
     .start()
 #await 
 #query.awaitTermination()
 data.awaitTermination()
+
 
 
 

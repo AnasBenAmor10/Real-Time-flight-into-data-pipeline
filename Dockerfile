@@ -4,16 +4,27 @@ FROM bitnami/spark:3.2.4
 # Switch to root to install packages
 USER root
 
-#install and upgrade pip
+# Update the package list and install python3-pip, curl, telnet, and other utilities
 RUN apt-get update && \
-    apt-get install -y python3-pip && \
-    pip3 install --upgrade pip && \
+    apt-get install -y python3-pip curl telnet && \
     rm -rf /var/lib/apt/lists/*
+
+# Install Scala 2.12
+RUN curl -LO https://downloads.lightbend.com/scala/2.12.15/scala-2.12.15.tgz && \
+    tar -xzvf scala-2.12.15.tgz -C /opt/ && \
+    rm scala-2.12.15.tgz && \
+    mv /opt/scala-2.12.15 /opt/scala
+
+# Set up environment variables for Scala
+ENV SCALA_HOME /opt/scala
+ENV PATH $PATH:$SCALA_HOME/bin
 
 # Create the checkpoints directories and ensure the non-root user has write access
 RUN mkdir -p /opt/bitnami/spark/checkpoints/flight && \
     chown -R 1001:1001 /opt/bitnami/spark/checkpoints
+
+# Install the Elasticsearch client for Python
+RUN pip install elasticsearch==8.8.2
+    
 # Switch back to the default user
 USER 1001
-
-#CMD ["spark-submit", "--packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.4", "/opt/bitnami/spark/pyspark_consumer.py"]
