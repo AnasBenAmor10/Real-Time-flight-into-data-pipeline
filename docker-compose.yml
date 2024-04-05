@@ -18,12 +18,12 @@ services:
         - "9093:9093"
       environment:
         - KAFKA_BROKER_ID=1
-        - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181  
-        - ALLOW_PLAINTEXT_LISTENER=yes
-        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
-        - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
-        - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
-        - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+        - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181  #Kafka use Zookeeper to manager  and coordinate kafka Broker  
+        - ALLOW_PLAINTEXT_LISTENER=yes # Accept connections without SSL/TLS encryption it's usefull for development and Testing 
+        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT # it Specifies that both Client and External will use unecypted (palintext) Communication
+        - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093 #Using port 9092 for internal communication and 9093 for external
+        - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093 #Address that users using them to connect to kafka
+        - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT   # indicate that brokers Communicate with each other using internal network listener(CLient)
       depends_on:
         - zookeeper
       networks:
@@ -33,37 +33,37 @@ services:
     container_name: elasticsearch-cntr
     image: bitnami/elasticsearch:8.8.2
     environment:
-      - cluster.name=kafka-cluster
-      - bootstrap.memory_lock=true
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - xpack.security.enabled=false
+      - cluster.name=kafka-cluster #This allows nodes in a cluster to be grouped under a common name, making it easier to manage
+      - bootstrap.memory_lock=true #Locks memory to prevent swapping (Swapping can cause significant delays for in-memory operations)
+      - discovery.type=single-node #Configure a cluster to function with  a mono-nœud mode .
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m #Define JVM option that maximum and minimum memory 512MB
+      - xpack.security.enabled=false #Désactivate the sécurité X-Pack (X-Pack includes various security features, such as authentication and encryption ) just to facilitate test
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data:rw
-    ulimits:
+      - elasticsearch_data:/usr/share/elasticsearch/data:rw #Mounting a volume for Elasticsearch data persistence.
+    ulimits: # Define System limites for the container
       memlock:
-        soft: -1
-        hard: -1
+        soft: -1 #No soft limit 
+        hard: -1 #No hard limit
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "9200:9200" # HTTP Port for REST operation
+      - "9300:9300" #Communication port between cluster noeuds
     depends_on:
-      - kafka
+      - kafka # wait kafka
     stdin_open: true
     tty: true
-    restart: always
+    restart: always #Automatically restarts the container on failure.
     networks:
       - flight_network
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
-        max-file: "50"
-    healthcheck:
-      test: curl -u elastic:elastic -s -f elasticsearch-cntr:9200/_cat/health >/dev/null || exit 1
-      interval: 10s
-      timeout: 10s
-      retries: 5
+        max-size: "10m" #Taille maximal of log file.
+        max-file: "50" #max number of log file
+    healthcheck: #hecks the health status of the service.
+      test: curl -u elastic:elastic -s -f elasticsearch-cntr:9200/_cat/health >/dev/null || exit 1 #Command to check health.
+      interval: 10s # Interval between checks.
+      timeout: 10s #Maximum waiting time for each check.
+      retries: 5 #Number of retries before considering the service unhealthy.
 
   kibana:
     container_name: kibana-cntr
