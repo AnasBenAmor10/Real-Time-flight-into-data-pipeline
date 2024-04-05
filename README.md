@@ -26,7 +26,9 @@ Our project pipeline is as follows:
 - **Elasticsearch**: Stores and indexes the processed data.
 - **Kibana**: Visualizes insights on an interactive dashboard.
 
-![Pipeline](images/pipeline.png)
+<div align="center">
+  ![Pipeline](images/pipeline.png)
+</div>  
 
 
 ## Dockerized Environment 
