@@ -1,4 +1,18 @@
-# Real-Time-flight-into-data-pipeline with Kafka, Apache Spark, Elasticsearch and Kibana
+<h1 align="center">
+  <br>
+  Real-Time-flight-into-data-pipeline Dashboard
+</h1>
+<div align="center">
+  <h4>
+    <a href="#overview">Overview</a> |
+    <a href="#data-pipeline-overview">Data Pipeline Overview</a> |
+    <a href="#dockerized-environment">Dockerized Environment</a> |
+    <a href="#prerequisites">Prerequisites</a>
+    <a href="#setup-and-running-instructions">Setup and Running Instructions</a> |
+    <a href="#how-to-launch-kibana-dashboard">How to launch kibana dashboard</a> |
+  </h4>
+</div>
+<br>
 
 ## Overview
 
@@ -52,3 +66,8 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 - Open dashboard
 
 ## Final result
+
+## Contributors
+<a href="https://github.com/AnasBenAmor10/Real-Time-flight-into-data-pipeline/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=AnasBenAmor10/Real-Time-flight-into-data-pipeline" />
+</a>
