@@ -41,8 +41,8 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 4. Execute the Data Processing Scripts:
     - For Windows: `run.bat`
     - For Linux/MacOS: `run.sh`
-    ```
 5. Access Kibana Dashboard at `http://localhost:5601`.
+     ```
  `
 
 ## How to launch kibana dashboard
