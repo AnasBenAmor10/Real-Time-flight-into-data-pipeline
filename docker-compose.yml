@@ -92,7 +92,14 @@ services:
       interval: 30s
       retries: 3
       timeout: 10s
-      
+
+  load-kibana-dashboad:
+    build: ./kibana
+    command: ['/bin/bash', '-c', 'cat /tmp/load/load_ndjson.sh | tr -d "\r" | bash']
+    depends_on:
+      - kibana
+    networks:
+      - flight_network      
 
   
   spark-master:
