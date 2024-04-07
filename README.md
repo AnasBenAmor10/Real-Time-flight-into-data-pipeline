@@ -65,7 +65,7 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 
 - Open http://localhost:5601/ in your browser.
 - Go to Management>StackManagement>Kibana>Saved Objects
-- Import export.ndjson
+- Import export.ndjson from kibana folder which is in my repo 
 - Open dashboard
 
 ## Final result
