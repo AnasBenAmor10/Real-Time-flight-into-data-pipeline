@@ -69,7 +69,7 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 - Open dashboard
 
 ## Final result
-- The image is of a flight tracking interface displaying live air traffic. Color-coded icons show different flight statuses—red for scheduled and yellow for en route. Hovering over an aircraft icon reveals its flight details, offering an interactive and informative experience.
+- The image is of a flight tracking interface displaying live air traffic. Color-coded icons show different flight statuses—red for scheduled and yellow for en route flights. Hovering over an aircraft icon reveals its flight details, offering an interactive and informative experience.
 
 ![Map](images/map.png)
 
