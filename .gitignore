@@ -1,2 +1,4 @@
 # Ignore File.env
 .env
+#Ignore /tmp
+/tmp
