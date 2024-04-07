@@ -35,7 +35,7 @@ Our project pipeline is as follows:
 
 To ensure seamless operation and management, our Real-time-flight-into-data-pipeline is built upon a Dockerized environment, encapsulating each component of the system within its own container. This approach not only fosters a modular architecture, making it easier to update and maintain individual parts without affecting the whole system, but also enhances scalability and fault tolerance. Each service, from Kafka for real-time data ingestion to Kibana for insightful visualizations, operates in an isolated yet interconnected manner through a custom Docker network. This setup not only reflects best practices in container orchestration but also provides a robust, scalable solution for real-time data processing and visualization. By adopting this architecture, users can enjoy a streamlined setup process, predictable behavior across environments, and a flexible system ready to adapt to future needs and improvements.
 
-![Docker Cluster](images/Docker-cluster.png)
+![Docker Cluster](images/docker-cluster.png)
 
 ## Prerequisites
 
@@ -65,7 +65,7 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 
 - Open http://localhost:5601/ in your browser.
 - Go to Management>StackManagement>Kibana>Saved Objects
-- Import export.ndjson
+- Import export.ndjson from kibana folder which is in my repo 
 - Open dashboard
 
 ## Final result
