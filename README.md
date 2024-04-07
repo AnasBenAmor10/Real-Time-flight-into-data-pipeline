@@ -60,8 +60,9 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
     - For Linux/MacOS: `run.sh`
 5. Access Kibana Dashboard at `http://localhost:5601`.
  `
-
-## How to launch kibana dashboard
+> [!NOTE]
+> Useful information that users should know, If importing export.ndjson into Kibana through Docker does not work, the next step is to perform the importation manually through the Kibana
+## How to launch kibana dashboard 
 
 - Open http://localhost:5601/ in your browser.
 - Go to Management>StackManagement>Kibana>Saved Objects
