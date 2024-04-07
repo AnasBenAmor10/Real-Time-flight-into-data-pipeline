@@ -10,6 +10,7 @@
     <a href="#prerequisites">Prerequisites</a>
     <a href="#setup-and-running-instructions">Setup and Running Instructions</a> |
     <a href="#how-to-launch-kibana-dashboard">How to launch kibana dashboard</a> |
+    <a href="#final-result">Final result</a> |
   </h4>
 </div>
 <br>
@@ -30,7 +31,9 @@ Our project pipeline is as follows:
 ![Pipeline](images/pipeline.png)
 
 
-## Dockerized Environment 
+## Dockerized Environment
+
+To ensure seamless operation and management, our Real-time-flight-into-data-pipeline is built upon a Dockerized environment, encapsulating each component of the system within its own container. This approach not only fosters a modular architecture, making it easier to update and maintain individual parts without affecting the whole system, but also enhances scalability and fault tolerance. Each service, from Kafka for real-time data ingestion to Kibana for insightful visualizations, operates in an isolated yet interconnected manner through a custom Docker network. This setup not only reflects best practices in container orchestration but also provides a robust, scalable solution for real-time data processing and visualization. By adopting this architecture, users can enjoy a streamlined setup process, predictable behavior across environments, and a flexible system ready to adapt to future needs and improvements.
 
 ![Docker Cluster](images/Docker-cluster.png)
 
@@ -61,11 +64,36 @@ Our project pipeline is as follows:
 ## How to launch kibana dashboard
 
 - Open http://localhost:5601/ in your browser.
-- Go to Management>Kibana>Saved Objects
-- Import P2M-Dashbord.ndjson
+- Go to Management>StackManagement>Kibana>Saved Objects
+- Import export.ndjson
 - Open dashboard
 
 ## Final result
+- The image is of a flight tracking interface displaying live air traffic. Color-coded icons show different flight statuses—red for scheduled and yellow for en route. Hovering over an aircraft icon reveals its flight details, offering an interactive and informative experience.
+- 
+![Map](images/map.png)
+
+-The image presents a flight heatmap, using a color gradient from blue to red to show varying concentrations of air traffic across the globe, with the most intense areas highlighted in red.
+
+![Heatmap](images/heatmap.png)
+
+-The bar chart shows the U.S. leading the top five countries in air travel, followed by Ireland, the UK, Canada, and Turkey.
+
+![bar-chart](images/horizantalBar.png)
+
+-The image is a donut chart that illustrates the relative market share of several leading airlines, identified by their IATA codes by different colors. The segments vary in size, indicating the proportion of flights each airline operates.
+
+![Pie](images/pie.png)
+
+-The image features a bar chart that ranks aircraft models by their commonality in operation, using their respective ICAO codes for identification. The size of each bar corresponds to how frequently each aircraft model is used, with some models being more common than others.
+
+![Tree-Map](images/TreeMap.png)
+
+-The chart visualizes how an aircraft's average speed typically increases with altitude, with the trend leveling off at higher altitudes.
+
+![line](images/line.png)
+
+
 
 ## Contributors
 <a href="https://github.com/AnasBenAmor10/Real-Time-flight-into-data-pipeline/graphs/contributors">
