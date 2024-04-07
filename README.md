@@ -61,7 +61,7 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 5. Access Kibana Dashboard at `http://localhost:5601`.
  `
 
-## How to launch kibana dashboard
+## How to launch kibana dashboard ( if load export.ndjson doesn't run with docker do that )
 
 - Open http://localhost:5601/ in your browser.
 - Go to Management>StackManagement>Kibana>Saved Objects
