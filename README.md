@@ -51,14 +51,20 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
     ```
     pip install -r requirements.txt
     ```
-3. Run the Kafka Producer:
+4. Run the Kafka Producer:
+   - If You  Have an Account in airlanb using your api_key
     ```
-    python kafka_producer_api.py
+    python3 kafka_producer_api.py
     ```
-4. Execute the Data Processing Scripts:
+    - Sinon
+       ```
+    ./data python3 kafka_producer.py
+    ```
+      
+6. Execute the Data Processing Scripts:
     - For Windows: `run.bat`
     - For Linux/MacOS: `run.sh`
-5. Access Kibana Dashboard at `http://localhost:5601`.
+7. Access Kibana Dashboard at `http://localhost:5601`.
  `
 > [!NOTE]
 > Useful information that users should know, If importing export.ndjson into Kibana through Docker does not work, the next step is to perform the importation manually through the Kibana
