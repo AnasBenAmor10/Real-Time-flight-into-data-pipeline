@@ -56,8 +56,8 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
     ```
     python3 kafka_producer_api.py
     ```
-    - Sinon
-       ```
+   - Sinon
+    ```
     ./data python3 kafka_producer.py
     ```
       
