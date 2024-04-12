@@ -2,19 +2,16 @@
   <br>
   Real-Time-flight-into-data-pipeline Dashboard
 </h1>
-<div align="center">
-  <h4>
-    <a href="#overview">Overview</a> |
-    <a href="#data-pipeline-overview">Data Pipeline Overview</a> |
-    <a href="#dockerized-environment">Dockerized Environment</a> |
-    <a href="#prerequisites">Prerequisites</a>
-    <a href="#setup-and-running-instructions">Setup and Running Instructions</a> |
-    <a href="#how-to-launch-kibana-dashboard">How to launch kibana dashboard</a> |
-    <a href="#final-result">Final result</a> |
-  </h4>
-</div>
-<br>
 
+    - [Overview](#Overview)
+    - [Data Pipeline Overview](#D*data-pipeline-overview)
+    - [Dockerized Environment](#dockerized-environment)
+    - [Prerequisites](#prerequisites)
+    - [Setup and Running Instructions](#setup-and-running-instructions)
+    - [How to launch kibana dashboard](#how-to-launch-kibana-dashboard)
+    - [Final result](#final-result)
+
+    
 ## Overview
 
 In this project, we will use a real-time flight tracking API, Apache Kafka, ElastichSearch and Kibana to create a real-time Flight-info data pipeline and track the flights in real-time. We will use a high-level architecture and
