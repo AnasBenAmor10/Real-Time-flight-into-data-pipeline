@@ -1,12 +1,10 @@
-<h1 align="center">
-  <br>
-  Real-Time-flight-into-data-pipeline Dashboard
-</h1>
+# Real-Time-flight-into-data-pipeline Dashboard
+
 
 ## Table of Contents
 
-    - [Overview](#Overview)
-    - [Data Pipeline Overview](#D*data-pipeline-overview)
+    - [Overview](#overview)
+    - [Data Pipeline Overview](#data-pipeline-overview)
     - [Dockerized Environment](#dockerized-environment)
     - [Prerequisites](#prerequisites)
     - [Setup and Running Instructions](#setup-and-running-instructions)
