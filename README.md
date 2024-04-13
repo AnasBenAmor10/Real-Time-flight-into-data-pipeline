@@ -24,7 +24,7 @@ Our project pipeline is as follows:
 - **Kibana**: Visualizes insights on an interactive dashboard.
 
 
-![Pipeline](images/pipeline.png)
+![Pipeline](images/pipeline..png)
 
 
 ## Dockerized Environment
