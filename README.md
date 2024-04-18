@@ -1,19 +1,15 @@
-<h1 align="center">
-  <br>
-  Real-Time-flight-into-data-pipeline Dashboard
-</h1>
-<div align="center">
-  <h4>
-    <a href="#overview">Overview</a> |
-    <a href="#data-pipeline-overview">Data Pipeline Overview</a> |
-    <a href="#dockerized-environment">Dockerized Environment</a> |
-    <a href="#prerequisites">Prerequisites</a>
-    <a href="#setup-and-running-instructions">Setup and Running Instructions</a> |
-    <a href="#how-to-launch-kibana-dashboard">How to launch kibana dashboard</a> |
-    <a href="#final-result">Final result</a> |
-  </h4>
-</div>
-<br>
+# Real-Time-flight-into-data-pipeline Dashboard
+
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Data Pipeline Overview](#data-pipeline-overview)
+- [Dockerized Environment](#dockerized-environment)
+- [Prerequisites](#prerequisites)
+- [Setup and Running Instructions](#setup-and-running-instructions)
+- [How to launch kibana dashboard](#how-to-launch-kibana-dashboard)
+- [Final result](#final-result)
 
 ## Overview
 
@@ -28,7 +24,7 @@ Our project pipeline is as follows:
 - **Kibana**: Visualizes insights on an interactive dashboard.
 
 
-![Pipeline](images/pipeline.png)
+![Pipeline](images/pipeline..png)
 
 
 ## Dockerized Environment
@@ -51,14 +47,20 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
     ```
     pip install -r requirements.txt
     ```
-3. Run the Kafka Producer:
+4. Run the Kafka Producer:
+   - If You  Have an Account in airlanb using your api_key
     ```
-    python kafka_producer_api.py
+    python3 kafka_producer_api.py
     ```
-4. Execute the Data Processing Scripts:
+   - Sinon
+    ```
+    ./data python3 kafka_producer.py
+    ```
+      
+6. Execute the Data Processing Scripts:
     - For Windows: `run.bat`
     - For Linux/MacOS: `run.sh`
-5. Access Kibana Dashboard at `http://localhost:5601`.
+7. Access Kibana Dashboard at `http://localhost:5601`.
  `
 > [!NOTE]
 > Useful information that users should know, If importing export.ndjson into Kibana through Docker does not work, the next step is to perform the importation manually through the Kibana
