@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Copy pyspark_consumer.py to the Spark container
-docker cp ./pyspark_consumer.py real-time-flight-into-data-pipeline_spark-master_1:/opt/bitnami/spark/pyspark_consumer.py
+docker cp ./pyspark_consumer.py real-time-flight-into-data-pipeline-spark-master-1:/opt/bitnami/spark/pyspark_consumer.py
 
 #Run create_index.py
 
