@@ -22,7 +22,7 @@ jobs:
          context: .
          dockerfile: Dockerfile
          push: false
-         tags: ${{secrets.DOCKER_USERNAME}}/spark:latest
+         tags: ${{secrets.DOCKERHUB_USERNAME}}/spark:latest
 
 
     - name: Login to Docker Hub
