@@ -38,4 +38,4 @@ jobs:
          context: .
          dockerfile: Dockerfile
          push: true
-         tags: ${{secrets.DOCKER_USERNAME}}/spark:latest
+         tags: ${{secrets.DOCKERHUB_USERNAME}}/spark:latest
