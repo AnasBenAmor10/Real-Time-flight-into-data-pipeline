@@ -27,7 +27,7 @@ RUN mkdir -p /opt/bitnami/spark/checkpoints/flight && \
 # Install the Elasticsearch client for Python
 RUN pip install elasticsearch==8.8.2
 #Run create_index.py
-
+COPY ./create_index_elastic /app/create_index_elastic
 RUN python3 create_index_elastic.py    
 # Switch back to the default user
 USER 1001
