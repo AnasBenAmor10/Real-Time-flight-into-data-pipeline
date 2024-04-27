@@ -23,7 +23,10 @@ ENV PATH $PATH:$SCALA_HOME/bin
 RUN mkdir -p /opt/bitnami/spark/checkpoints/flight && \
     chown -R 1001:1001 /opt/bitnami/spark/checkpoints
 
+COPY ./pyspark_consumer.py /opt/bitnami/spark/pyspark_consumer.py
 
+RUN mkdir /app
+COPY ./create_index_elastic.py /app/reate_index_elastic.py
 # Install the Elasticsearch client for Python
 RUN pip install elasticsearch==8.8.2
 # Switch back to the default user
