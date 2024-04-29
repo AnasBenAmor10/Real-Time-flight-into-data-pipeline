@@ -2,3 +2,5 @@
 .env
 #Ignore /tmp
 tmp/
+
+.venv

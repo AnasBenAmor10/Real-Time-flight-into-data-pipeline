@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': 'http'}])
 
 # Define the index name
-index_name = "flight"
+index_name = "esflight"
 
 # Check if the Elasticsearch index exists
 if es.indices.exists(index=index_name):
@@ -22,9 +22,7 @@ mapping = {
          "hex": { "type": "keyword" },
          "reg_number":{"type": "keyword"},
          "flag":{"type":"keyword"},
-         "position": {
-            "type": "geo_point"
-         },
+         "position":{"type":"geo_point"},
          "alt":{"type":"float"},
          "dir":{"type":"float"},
          "speed":{"type":"integer"},
@@ -36,6 +34,12 @@ mapping = {
          "airline_iata":{"type":"keyword"},
          "aircraft_icao": { "type": "keyword" },
          "status": { "type": "keyword" },
+         "type": { "type": "keyword" },
+         "arr_pos":{"type":"geo_point"},
+         "dep_pos":{"type":"geo_point"},
+         "Departure":{"type":"keyword"},
+         "Arrival":{"type":"keyword"},
+
          }
     }
 }
