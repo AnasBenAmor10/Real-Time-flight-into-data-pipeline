@@ -23,10 +23,7 @@ ENV PATH $PATH:$SCALA_HOME/bin
 RUN mkdir -p /opt/bitnami/spark/checkpoints/flight && \
     chown -R 1001:1001 /opt/bitnami/spark/checkpoints
 
-<<<<<<< HEAD
-=======
 # Copy spark file into a container
->>>>>>> 79ff164 (docker file and workflow)
 COPY ./pyspark_consumer.py /opt/bitnami/spark/pyspark_consumer.py
 
 RUN mkdir /app
