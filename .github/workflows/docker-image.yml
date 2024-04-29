@@ -39,7 +39,8 @@ jobs:
           dockerfile: Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/spark:latest
-
+          
+jobs:
   deploy:
     name: Connect and configure Azure Cloud
     runs-on: ubuntu-latest
@@ -49,4 +50,36 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      
+          
+     # - name: SSH to Azure VM
+      #  uses: appleboy/ssh-action@master
+       # with:
+        #  host: ${{ secrets.SSH_HOST }}
+         # username: ${{ secrets.SSH_USERNAME }}
+          #key: ${{ secrets.SSH_PRIVATE_KEY }}
+          #port: ${{ secrets.SSH_PORT }}
+
+      #- name: Set up Java
+       # uses: actions/setup-java@v4
+        #with:
+         # distribution: 'adopt'
+          #java-version: '21'
+
+      #- name: Checkout code
+       # uses: actions/checkout@v3        
+
+      #- name: Build and Deploy Docker Compose into Azure VM
+       # run: |
+        #    docker compose build
+         #   docker compose up -d  
+#      - name: Run Python script
+#        run: python3 create_index_elastic.py       
+
+ #     - name: Run the docker compose     
+ #       run : |
+ #           docker-compose exec spark-master spark-submit --class consumer --total-executor-cores 4 --executor-memory 2g --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.4,org.elasticsearch:elasticsearch-spark-30_2.12:8.8.2,commons-httpclient:commons-httpclient:3.1 pyspark_consumer.py 
+           
+      #-name: Run run.sh
+       #run: |
+        #  chmod +x run.sh  
+         # ./run.sh 

@@ -30,8 +30,8 @@ services:
         - flight_network
 
   elasticsearch:
-    container_name: elasticsearch-cntr
-    image: bitnami/elasticsearch:8.8.2
+    container_name: elasticsearch-cntr              
+    image: bitnami/elasticsearch:8.8.2     
     environment:
       - cluster.name=kafka-cluster #This allows nodes in a cluster to be grouped under a common name, making it easier to manage
       - bootstrap.memory_lock=true #Locks memory to prevent swapping (Swapping can cause significant delays for in-memory operations)
@@ -110,9 +110,9 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'  #Limit ressources of Container -> CPU à 2 coeurs pour Contôler les ressources
+          cpus: '2'  #Limit ressources of Container -> CPU à 2 coeurs pour Contôler les ressources      
     networks:
-      - flight_network 
+      - flight_network   
 
   spark-worker-1:
     build: .

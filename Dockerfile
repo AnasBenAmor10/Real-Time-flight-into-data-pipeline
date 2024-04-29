@@ -23,11 +23,24 @@ ENV PATH $PATH:$SCALA_HOME/bin
 RUN mkdir -p /opt/bitnami/spark/checkpoints/flight && \
     chown -R 1001:1001 /opt/bitnami/spark/checkpoints
 
+<<<<<<< HEAD
+=======
+# Copy spark file into a container
+>>>>>>> 79ff164 (docker file and workflow)
 COPY ./pyspark_consumer.py /opt/bitnami/spark/pyspark_consumer.py
 
 RUN mkdir /app
 COPY ./create_index_elastic.py /app/reate_index_elastic.py
 # Install the Elasticsearch client for Python
 RUN pip install elasticsearch==8.8.2
+
+# Copy create index file into app directory into a spark container
+COPY ./create_index_elastic.py /opt/bitnami/spark/create_index_elastic.py
+
+# Set permissions for create_index_elastic.py
+RUN chown 1001:1001 /opt/bitnami/spark/create_index_elastic.py && \
+    chmod +x /opt/bitnami/spark/create_index_elastic.py
+
 # Switch back to the default user
 USER 1001
+
