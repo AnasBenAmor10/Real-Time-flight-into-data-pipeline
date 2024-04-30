@@ -24,16 +24,17 @@ RUN mkdir -p /opt/bitnami/spark/checkpoints/flight && \
     chown -R 1001:1001 /opt/bitnami/spark/checkpoints
 
 # Copy spark file into a container
-COPY ./pyspark_consumer.py /opt/bitnami/spark/pyspark_consumer.py
+#COPY ./pyspark_consumer.py /opt/bitnami/spark/pyspark_consumer.py
+COPY ./spark_consumer.py /opt/bitnami/spark/spark_consumer.py
 
 RUN mkdir /app
-COPY ./create_index_elastic.py /app/reate_index_elastic.py
+COPY ./create_index_elastic.py /app/create_index_elastic.py
 # Install the Elasticsearch client for Python
 RUN pip install elasticsearch==8.8.2
 
 # Copy create index file into app directory into a spark container
 COPY ./create_index_elastic.py /opt/bitnami/spark/create_index_elastic.py
-
+COPY airports_external.csv /opt/bitnami/spark/airports_external.csv
 # Set permissions for create_index_elastic.py
 RUN chown 1001:1001 /opt/bitnami/spark/create_index_elastic.py && \
     chmod +x /opt/bitnami/spark/create_index_elastic.py

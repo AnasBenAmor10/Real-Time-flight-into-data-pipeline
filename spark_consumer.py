@@ -1,10 +1,9 @@
 # IMPORT LIBRARIES
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
+from pyspark.conf import SparkConf
 from pyspark.sql.types import *
 from pyspark.sql.functions import from_json , col , when , length
-import logging
-import os
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType
 
@@ -37,27 +36,27 @@ schema = StructType([
     StructField("status", StringType(), True),
 ])
 
-# Set logging level to ERROR to suppress INFO messages
-logging.getLogger("org.apache.spark").setLevel(logging.ERROR)
-# Define the checkpoint location
-checkpoint_location = os.path.join(os.getcwd(), "checkpoint_location")
+spark_conf = SparkConf() \
+    .setAppName("flight_consumer") \
+    .setMaster("local") \
+    .set("spark.executor.memory", "2g") \
+    .set("spark.executor.cores", "2")
 
-# Define spark session and the dataframe
-spark = SparkSession.builder \
-        .appName("KafkaConsumer") \
-        .getOrCreate()
 
-params = {
-    "kafka.bootstrap.servers": "localhost:9092",
-    "subscribe": "flight",
-    "failOnDataLoss": "false",
-}
 
+# Create a SparkSession
+spark = SparkSession.builder.config(conf=spark_conf).getOrCreate()
+
+# Set log level to ERROR
+spark.sparkContext.setLogLevel("ERROR")
+
+# Read from the Kafka topic 'flight'
 dataframe = spark \
-            .readStream \
-            .format("kafka") \
-            .options(**params) \
-            .load()
+    .readStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", 'kafka:9092') \
+    .option("subscribe", "flight") \
+    .load()
 
 #----------------------------
 # PROCESSING THE DATA 
@@ -138,11 +137,11 @@ query = dataframe.writeStream \
     .format("org.elasticsearch.spark.sql") \
     .outputMode("update") \
     .option("es.mapping.id", "reg_number") \
-    .option("es.nodes", "localhost") \
+    .option("es.nodes", "elasticsearch") \
     .option("es.port", "9200") \
-    .option("es.nodes.wan.only", "true") \
-    .option("checkpointLocation", checkpoint_location) \
-    .option("es.resource", "esflight") \
+    .option("es.nodes.wan.only","true") \
+    .option("checkpointLocation", "tmp/checkpoint1") \
+    .option("es.resource", "esflight")\
     .start()
 
 # Writing to console (for test and debug purposes)
