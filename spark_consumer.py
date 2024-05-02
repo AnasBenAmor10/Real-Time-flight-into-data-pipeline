@@ -59,7 +59,7 @@ dataframe = spark \
     .load()
 
 #----------------------------
-# PROCESSING THE DATA 
+# PROCESSING THE DATA
 
 # Load the CSV file containing the mapping of IATA codes to country codes into a dictionary
 iata_country_dict = spark.read.csv("airports_external.csv", header=True) \
