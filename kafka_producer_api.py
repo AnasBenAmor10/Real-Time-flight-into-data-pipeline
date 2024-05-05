@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 import os
 
 
-# bootstrap_servers = 'localhost:9093'
-bootstrap_servers = 'localhost:9092'
+bootstrap_servers = 'localhost:9093'
+#bootstrap_servers = 'localhost:9092'
 
 # Create a Kafka producer
 producer = KafkaProducer(bootstrap_servers=bootstrap_servers, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
