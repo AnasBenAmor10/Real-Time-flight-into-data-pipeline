@@ -23,6 +23,12 @@ ENV PATH $PATH:$SCALA_HOME/bin
 RUN mkdir -p /opt/bitnami/spark/checkpoints/flight && \
     chown -R 1001:1001 /opt/bitnami/spark/checkpoints
 
+ # Copy the requirements file into the container at /app
+COPY requirements.txt .
+
+# Install the requirements
+RUN pip install -r requirements.txt   
+
 # Copy spark file into a container
 #COPY ./pyspark_consumer.py /opt/bitnami/spark/pyspark_consumer.py
 COPY ./spark_consumer.py /opt/bitnami/spark/spark_consumer.py
