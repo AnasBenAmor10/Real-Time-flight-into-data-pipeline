@@ -140,7 +140,7 @@ query = dataframe.writeStream \
     .option("es.nodes", "elasticsearch") \
     .option("es.port", "9200") \
     .option("es.nodes.wan.only","true") \
-    .option("checkpointLocation", "tmp/checkpoint1") \
+    .option("checkpointLocation", "tmp/checkpoint2") \
     .option("es.resource", "esflight")\
     .start()
 

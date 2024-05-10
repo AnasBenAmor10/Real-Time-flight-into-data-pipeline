@@ -1,10 +1,4 @@
 # Ignore File.env
 .env
 #Ignore /tmp
-<<<<<<< HEAD
-tmp/
-
-.venv
-=======
 tmp
->>>>>>> 79ff164 (docker file and workflow)

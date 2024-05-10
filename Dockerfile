@@ -36,7 +36,6 @@ COPY airports_external.csv /opt/bitnami/spark/airports_external.csv
 # Set permissions for create_index_elastic.py
 RUN chown 1001:1001 /opt/bitnami/spark/create_index_elastic.py && \
     chmod +x /opt/bitnami/spark/create_index_elastic.py
-RUN python3 /opt/bitnami/spark/create_index_elastic.py
 
 # Switch back to the default user
 USER 1001
