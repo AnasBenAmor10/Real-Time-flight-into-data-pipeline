@@ -59,7 +59,7 @@ while True:  # Infinite loop for continuous streaming, you may adjust this as ne
 
                 producer.send('flight', value=d)
                 print(d)
-                time.sleep(1)
+                time.sleep(0.05)
                 
             
         else:
