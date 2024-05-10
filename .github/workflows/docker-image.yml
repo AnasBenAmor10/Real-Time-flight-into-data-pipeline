@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build_and_deploy:
     name: Build and Deploy real-time flight
     runs-on: ubuntu-latest
     steps:
@@ -40,17 +40,11 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/spark:latest
           
-jobs:
-  deploy:
-    name: Connect and configure Azure Cloud
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login via Azure CLI
+      - name: Connect and configure Azure Cloud
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-          
       - name: SSH to Azure VM
         uses: appleboy/ssh-action@master
         with:
@@ -72,6 +66,7 @@ jobs:
         run: |
             docker compose build
             docker compose up -d  
+
       - name: Run Python script
         run: python3 create_index_elastic.py       
 
