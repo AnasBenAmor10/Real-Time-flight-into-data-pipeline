@@ -45,7 +45,18 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Install Docker Compose if not installed
+            # Print the current directory
+            echo "Current directory:"
+            pwd
+
+            # Print the contents of the current directory
+            echo "Directory contents:"
+            ls -la
+
+            # Use the GITHUB_WORKSPACE variable to navigate to the repository directory
+            cd $GITHUB_WORKSPACE
+
+            # Ensure Docker Compose is installed
             if ! command -v docker-compose &> /dev/null
             then
                 echo "docker-compose could not be found, installing..."
