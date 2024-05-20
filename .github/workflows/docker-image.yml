@@ -45,7 +45,24 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            docker compose build
-            docker compose up -d  
-            python3 create_index_elastic.py       
+            # Ensure Docker Compose is installed
+            if ! command -v docker-compose &> /dev/null
+            then
+                echo "docker-compose could not be found"
+                exit 1
+            fi
+
+            # Build and run Docker containers
+            docker-compose build
+            docker-compose up -d
+
+            # Ensure the Python script is present
+            if [ ! -f create_index_elastic.py ]; then
+                echo "create_index_elastic.py not found!"
+                exit 1
+            fi
+
+            python3 create_index_elastic.py
+
+            # Run Spark consumer job
             docker-compose exec spark-master spark-submit --class consumer --total-executor-cores 4 --executor-memory 2g --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.4,org.elasticsearch:elasticsearch-spark-30_2.12:8.8.2,commons-httpclient:commons-httpclient:3.1 spark_consumer.py
