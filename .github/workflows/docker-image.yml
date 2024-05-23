@@ -18,8 +18,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-  dockerHub:
-    name: Docker Login and Build
+  docker:
+    name: Docker Login and Build into Docker Hub
     runs-on: ubuntu-latest
     needs: checkout
     continue-on-error: true
@@ -39,7 +39,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/spark:latest
 
   Azure_login:
-    name: Connect and Configure Azure Cloud
+    name: Connect to Azure Cloud
     runs-on: ubuntu-latest
     needs: checkout
     steps:
@@ -60,3 +60,10 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+   SSH_to_Azure:
+    name: Build a Docker Compose into Azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+           
