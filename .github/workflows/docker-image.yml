@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          dockerfile: Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/spark:latest
 
@@ -69,8 +69,10 @@ jobs:
       - name: Copy Docker Compose File to Azure VM
         uses: appleboy/scp-action@master
         with:
-          source: .
-          target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}/home/azureuser/deployment
+          source: ./docker-compose.yml
+          target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}/home/azureuser
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
 
@@ -82,5 +84,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /home/azureuser/deployment
+            cd /home/azureuser
+            docker-compose build
             docker-compose up -d
