@@ -23,8 +23,9 @@ Our project pipeline is as follows:
 - **Elasticsearch**: Stores and indexes the processed data.
 - **Kibana**: Visualizes insights on an interactive dashboard.
 
+![Pipeline](images/Architecture.png)
 
-![Pipeline](images/pipeline..png)
+The solution involves retrieving real-time data from the Airlabs API, which contains a wealth of information related to air traffic and airport density. The data is transmitted through a Kafka producer and recorded in a topic named flight. For data processing, we use Apache Spark. The Spark session subscribes to the flight topic and downloads the data from it. After the processing operation, the data is sent to Elasticsearch and recorded in the esflight index of Elasticsearch. Using the Kibana dashboard, we can visualize the data in real time and with precision. The GitHub Actions part of our solution allows us to automate the deployment of the real-time data processing pipeline. When a change is made on GitHub, GitHub Actions triggers to execute multiple jobs. First, the Docker images of the various components are rebuilt. Then, these images are deployed on an Azure virtual machine. This continuous integration ensures that our system is always up-to-date and operational, enabling efficient real-time data management and precise visualization via the Kibana dashboard.
 
 
 ## Dockerized Environment
@@ -72,29 +73,26 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 - Open dashboard
 
 ## Final result
-- The image is of a flight tracking interface displaying live air traffic. Color-coded icons show different flight statuses—red for scheduled and yellow for en route flights. Hovering over an aircraft icon reveals its flight details, offering an interactive and informative experience.
+Let us now focus on the graphs developed during the data visualization process. After consulting aviation experts and airport administrators, we have chosen to divide our dashboard into three sections: airport information, flight information, and aircraft information.
+### Airport Information
+-For this section of the dashboard, we focused on information useful for airport administrators, notably the total number of flights related to that airport and the flow of departures and arrivals. The figure above shows an overview for all airports, but the available filters allow selecting a specific airport or region.
 
-![Map](images/map.png)
+![Airport-information](images/Airport-information.png)
 
--The image presents a flight heatmap, using a color gradient from blue to red to show varying concentrations of air traffic across the globe, with the most intense areas highlighted in red.
+### Flight Information
+-For this part of the dashboard, and following the advice of experts regarding the necessary information, we chose to visualize on the map the position of aircraft, their departure and arrival airports sorted by their speeds or altitudes as needed. Then, on the left, we have for each type of aircraft, the types of routes it operates. We notice that the larger the aircraft, the more capable it is of performing long-haul flights. Similarly, we can see on the right side of the drawing, the most frequent flights by geographical region. This approach provides the most information possible about the nature of flights, their frequencies, and the type of aircraft that operates them.
 
-![Heatmap](images/heatmap.png)
+![Flight-information](images/Flight-information.png)
 
--The bar chart shows the U.S. leading the top five countries in air travel, followed by Ireland, the UK, Canada, and Turkey.
+### Aircraft Information
+-Finally, for the section related to the aircraft itself, using the data available on the API, we can determine the average and maximum speeds of aircraft as well as their speeds relative to their altitudes to ultimately identify the fastest aircraft and rank them in descending order.
+![Aircraft-information](images/Aircraft-information.png)
 
-![bar-chart](images/horizantalBar.png)
+### Filters' addition
+-En plus des graphiques, nous avons élaboré une variété de filtres qui rendent le dashboars personnalisable et interactif. Notamment, nous utilisons un filtre pour le code de vol, le départ ou l'arrivée, le status du vol ou son type mais aussi la companie aérienne et le code d'avion.
+On trouve les filtres dans l'entête du dashboard comme suit:
 
--The image is a donut chart that illustrates the relative market share of several leading airlines, identified by their IATA codes by different colors. The segments vary in size, indicating the proportion of flights each airline operates.
-
-![Pie](images/pie.png)
-
--The image features a bar chart that ranks aircraft models by their commonality in operation, using their respective ICAO codes for identification. The size of each bar corresponds to how frequently each aircraft model is used, with some models being more common than others.
-
-![Tree-Map](images/TreeMap.png)
-
--The chart visualizes how an aircraft's average speed typically increases with altitude, with the trend leveling off at higher altitudes.
-
-![line](images/line.png)
+![Filters](images/cover-filters.png)
 
 
 
