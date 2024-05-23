@@ -74,9 +74,9 @@ jobs:
         uses: appleboy/scp-action@v0.1.7
         with:
           source: ./docker-compose.yml
-          target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}/home
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          target: /home/${{ secrets.SSH_USERNAME }}/docker-compose.yml
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
 
@@ -88,6 +88,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /home
+            cd /home/${{ secrets.SSH_USERNAME }}
             docker-compose build
             docker-compose up -d
