@@ -70,7 +70,7 @@ jobs:
     needs: ssh_to_azure
     steps:
       - uses: actions/checkout@v3
-      - name: copy file 
+      - name: Copy docker-compose file
         uses: appleboy/scp-action@v0.1.7
         with:
           source: ./docker-compose.yml
@@ -79,6 +79,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          overwrite: true
 
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
