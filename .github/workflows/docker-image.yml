@@ -60,7 +60,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-   SSH_to_Azure:
+   Azure:
     name: Build a Docker Compose into Azure
     runs-on: ubuntu-latest
     steps:
