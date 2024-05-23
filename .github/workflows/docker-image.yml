@@ -70,7 +70,7 @@ jobs:
     needs: ssh_to_azure
     steps:
       - name: Copy Docker Compose File to Azure VM
-        uses: appleboy/scp-action@mv1.0.0
+        uses: appleboy/scp-action@v1.0.0
         with:
           source: ./docker-compose.yml
           target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}/home/azureuser
