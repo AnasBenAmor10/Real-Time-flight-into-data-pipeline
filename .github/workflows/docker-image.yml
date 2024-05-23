@@ -89,5 +89,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/${{ secrets.SSH_USERNAME }}
+            ls -l
+            cat docker-compose.yml
             docker-compose build
             docker-compose up -d
