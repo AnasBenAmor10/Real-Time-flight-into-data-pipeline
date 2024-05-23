@@ -69,12 +69,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: ssh_to_azure
     steps:
-      - uses: actions/checkout@v4
-      - name: copy file via ssh password
+      - uses: actions/checkout@v3
+      - name: copy file 
         uses: appleboy/scp-action@v0.1.7
         with:
           source: ./docker-compose.yml
-          target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}/home/azureuser
+          target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}/home
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -88,6 +88,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /home/azureuser
+            cd /home
             docker-compose build
             docker-compose up -d
