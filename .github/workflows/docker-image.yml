@@ -26,11 +26,11 @@ jobs:
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
-        with:
+        with: 
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push Docker Image
+      - name: Build Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -69,7 +69,7 @@ jobs:
       - name: Copy Docker Compose File to Azure VM
         uses: appleboy/scp-action@master
         with:
-          source: ./docker-compose.yml
+          source: .
           target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}/home/azureuser/deployment
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
