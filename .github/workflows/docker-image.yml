@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with: 
@@ -70,7 +70,7 @@ jobs:
     needs: ssh_to_azure
     steps:
       - name: Copy Docker Compose File to Azure VM
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@mv1.0.0
         with:
           source: ./docker-compose.yml
           target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}/home/azureuser
