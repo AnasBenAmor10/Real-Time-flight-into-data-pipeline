@@ -70,6 +70,19 @@ jobs:
     needs: ssh_to_azure
     steps:
       - uses: actions/checkout@v3
+
+      - name: Clean up existing docker-compose.yml
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            if [ -d "/home/${{ secrets.SSH_USERNAME }}/docker-compose.yml" ]; then
+              rm -rf /home/${{ secrets.SSH_USERNAME }}/docker-compose.yml
+            fi
+
       - name: Copy docker-compose file
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -79,7 +92,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          overwrite: true
 
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
