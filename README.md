@@ -21,6 +21,8 @@ Our project pipeline is as follows:
 - **Spark**: Processes and analyzes the data.
 - **Elasticsearch**: Stores and indexes the processed data.
 - **Kibana**: Visualizes insights on an interactive dashboard.
+- **GitHub Actions** : Automate workflows and development tasks on GitHub.
+- **Azure**:To host the data pipeline
 
 ![Pipeline](images/Architecture.png)
 
@@ -37,11 +39,15 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 - Python: Ensure Python is installed for running the Kafka producer script.
 
 ## Setup and Running Instructions
-1. Start the Docker Containers: 
+1. Build the Docker Containers: 
+    ```
+    docker-compose build
+    ```
+2. Start the Docker Containers: 
     ```
     docker-compose up -d
     ```
-2. Install Python dependencies:
+3. Install Python dependencies:
     ```
     pip install -r requirements.txt
     ```
@@ -55,10 +61,10 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
     ./data python3 kafka_producer.py
     ```
       
-6. Execute the Data Processing Scripts:
+5. Execute the Data Processing Scripts:
     - For Windows: `run.bat`
     - For Linux/MacOS: `run.sh`
-7. Access Kibana Dashboard at `http://localhost:5601`.
+6. Access Kibana Dashboard at `http://localhost:5601`.
  `
 > [!NOTE]
 > Useful information that users should know, If importing export.ndjson into Kibana through Docker does not work, the next step is to perform the importation manually through the Kibana
@@ -72,21 +78,21 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 ## Final result
 Let us now focus on the graphs developed during the data visualization process. After consulting aviation experts and airport administrators, we have chosen to divide our dashboard into three sections: airport information, flight information, and aircraft information.
 ### Airport Information
--For this section of the dashboard, we focused on information useful for airport administrators, notably the total number of flights related to that airport and the flow of departures and arrivals. The figure above shows an overview for all airports, but the available filters allow selecting a specific airport or region.
+For this section of the dashboard, we focused on information useful for airport administrators, notably the total number of flights related to that airport and the flow of departures and arrivals. The figure above shows an overview for all airports, but the available filters allow selecting a specific airport or region.
 
 ![Airport-information](images/Airport-Information.png)
 
 ### Flight Information
--For this part of the dashboard, and following the advice of experts regarding the necessary information, we chose to visualize on the map the position of aircraft, their departure and arrival airports sorted by their speeds or altitudes as needed. Then, on the left, we have for each type of aircraft, the types of routes it operates. We notice that the larger the aircraft, the more capable it is of performing long-haul flights. Similarly, we can see on the right side of the drawing, the most frequent flights by geographical region. This approach provides the most information possible about the nature of flights, their frequencies, and the type of aircraft that operates them.
+For this part of the dashboard, and following the advice of experts regarding the necessary information, we chose to visualize on the map the position of aircraft, their departure and arrival airports sorted by their speeds or altitudes as needed. Then, on the left, we have for each type of aircraft, the types of routes it operates. We notice that the larger the aircraft, the more capable it is of performing long-haul flights. Similarly, we can see on the right side of the drawing, the most frequent flights by geographical region. This approach provides the most information possible about the nature of flights, their frequencies, and the type of aircraft that operates them.
 
 ![Flight-information](images/Flight-information.png)
 
 ### Aircraft Information
--Finally, for the section related to the aircraft itself, using the data available on the API, we can determine the average and maximum speeds of aircraft as well as their speeds relative to their altitudes to ultimately identify the fastest aircraft and rank them in descending order.
+Finally, for the section related to the aircraft itself, using the data available on the API, we can determine the average and maximum speeds of aircraft as well as their speeds relative to their altitudes to ultimately identify the fastest aircraft and rank them in descending order.
 ![Aircraft-information](images/Aircraft-information.png)
 
 ### Filters' addition
--En plus des graphiques, nous avons élaboré une variété de filtres qui rendent le dashboars personnalisable et interactif. Notamment, nous utilisons un filtre pour le code de vol, le départ ou l'arrivée, le status du vol ou son type mais aussi la companie aérienne et le code d'avion.
+En plus des graphiques, nous avons élaboré une variété de filtres qui rendent le dashboars personnalisable et interactif. Notamment, nous utilisons un filtre pour le code de vol, le départ ou l'arrivée, le status du vol ou son type mais aussi la companie aérienne et le code d'avion.
 On trouve les filtres dans l'entête du dashboard comme suit:
 
 ![Filters](images/cover-filters.png)
