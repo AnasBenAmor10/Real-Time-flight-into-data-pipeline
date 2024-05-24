@@ -13,8 +13,7 @@
 
 ## Overview
 
-In this project, we will use a real-time flight tracking API, Apache Kafka, ElastichSearch and Kibana to create a real-time Flight-info data pipeline and track the flights in real-time. We will use a high-level architecture and
-corresponding configurations that will allow us to create this data pipeline. The end result will be a Kibana dashboard fetching real-time data from ElasticSearch.
+The solution involves retrieving real-time data from the Airlabs API, which contains a wealth of information related to air traffic and airport density. The data is transmitted through a Kafka producer and recorded in a topic named flight. For data processing, we use Apache Spark. The Spark session subscribes to the flight topic and downloads the data from it. After the processing operation, the data is sent to Elasticsearch and recorded in the esflight index of Elasticsearch. Using the Kibana dashboard, we can visualize the data in real time and with precision. The GitHub Actions part of our solution allows us to automate the deployment of the real-time data processing pipeline. When a change is made on GitHub, GitHub Actions triggers to execute multiple jobs. First, the Docker images of the various components are rebuilt. Then, these images are deployed on an Azure virtual machine. This continuous integration ensures that our system is always up-to-date and operational, enabling efficient real-time data management and precise visualization via the Kibana dashboard.
 
 ## Data Pipeline Overview
 Our project pipeline is as follows:
@@ -24,8 +23,6 @@ Our project pipeline is as follows:
 - **Kibana**: Visualizes insights on an interactive dashboard.
 
 ![Pipeline](images/Architecture.png)
-
-The solution involves retrieving real-time data from the Airlabs API, which contains a wealth of information related to air traffic and airport density. The data is transmitted through a Kafka producer and recorded in a topic named flight. For data processing, we use Apache Spark. The Spark session subscribes to the flight topic and downloads the data from it. After the processing operation, the data is sent to Elasticsearch and recorded in the esflight index of Elasticsearch. Using the Kibana dashboard, we can visualize the data in real time and with precision. The GitHub Actions part of our solution allows us to automate the deployment of the real-time data processing pipeline. When a change is made on GitHub, GitHub Actions triggers to execute multiple jobs. First, the Docker images of the various components are rebuilt. Then, these images are deployed on an Azure virtual machine. This continuous integration ensures that our system is always up-to-date and operational, enabling efficient real-time data management and precise visualization via the Kibana dashboard.
 
 
 ## Dockerized Environment
