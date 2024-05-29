@@ -78,9 +78,9 @@ jobs:
           echo "${{ secrets.SSH_PUBLIC_KEY }}" >> /home/runner/.ssh/authorized_keys
           chmod 600 /home/runner/.ssh/id_rsa
           chmod 644 /home/runner/.ssh/authorized_keys
-          scp -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
-        env:
-          SSH_CMD: "sudo -s"
+          scp -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository_temp
+          ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "sudo mkdir -p /home/${{ secrets.SSH_USERNAME }}/repository && sudo mv /home/${{ secrets.SSH_USERNAME }}/repository_temp/* /home/${{ secrets.SSH_USERNAME }}/repository/ && sudo rm -rf /home/${{ secrets.SSH_USERNAME }}/repository_temp"
+
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
         with:
