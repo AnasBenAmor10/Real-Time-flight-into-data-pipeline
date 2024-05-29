@@ -63,6 +63,18 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+    name: Set up SSH
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
   deploy_docker_compose:
     name: Deploy Docker Compose to Azure VM
@@ -72,17 +84,8 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Copy repository to Azure VM
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          source: "./*"
-          target: "/home/${{ secrets.SSH_USERNAME }}/repository"
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-        env:
-          DEBUG: true
-          SSH_CMD: "sudo -s"
+        run: |
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
 
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
@@ -93,6 +96,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/${{ secrets.SSH_USERNAME }}/repository
-            ls -la 
+            ls -la
             docker-compose build
             docker-compose up -d
