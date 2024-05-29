@@ -89,14 +89,30 @@ jobs:
       - name: Move files to final destination
         run: |
           ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "sudo mkdir -p /home/${{ secrets.SSH_USERNAME }}/repository && sudo rsync -avh /home/${{ secrets.SSH_USERNAME }}/repository_temp/ /home/${{ secrets.SSH_USERNAME }}/repository/ && sudo rm -rf /home/${{ secrets.SSH_USERNAME }}/repository_temp"
-      - name: SSH to Azure VM and Build Docker Compose
-        uses: appleboy/ssh-action@master
-        with:
-           host: ${{ secrets.SSH_HOST }}
-           username: ${{ secrets.SSH_USERNAME }}
-           key: ${{ secrets.SSH_PRIVATE_KEY }}
-           port: ${{ secrets.SSH_PORT }}
-           script: |
-                 cd /home/${{ secrets.SSH_USERNAME }}/repository
-                 docker-compose build
-                 docker-compose up -d
+      - name: Install Docker on Azure VM
+        run: |
+          ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+            sudo apt-get update
+            sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+            sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+            sudo apt-get update
+            sudo apt-get install -y docker-ce
+            sudo usermod -aG docker ${{ secrets.SSH_USERNAME }}
+            sudo systemctl enable docker
+            sudo systemctl start docker
+
+      - name: Install Docker Compose on Azure VM
+        run: |
+          ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compos
+
+      - name: Run Docker Compose
+        run: |
+          ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+            newgrp docker
+            cd /home/${{ secrets.SSH_USERNAME }}/repository
+            docker-compose build
+            docker-compose up -d
