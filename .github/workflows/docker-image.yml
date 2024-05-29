@@ -70,9 +70,6 @@ jobs:
     needs: ssh_to_azure
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Create target directory on Azure VM
-        run: ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p /home/${{ secrets.SSH_USERNAME }}/repository"
 
       - name: Copy repository to Azure VM
         uses: appleboy/scp-action@v0.1.7
@@ -83,6 +80,8 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+        env:
+          DEBUG: true
 
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
