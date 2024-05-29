@@ -2,3 +2,4 @@
 .env
 #Ignore /tmp
 tmp
+out.txt
