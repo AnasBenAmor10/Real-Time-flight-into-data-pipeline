@@ -56,24 +56,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: azure_login
     steps:
-      - name: Copy repository to Azure VM
+      - name: SSH to Azure VM
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: |
-            ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-            ssh-agent bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY") && scp -o StrictHostKeyChecking=no -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository'
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
   deploy_docker_compose:
     name: Deploy Docker Compose to Azure VM
     runs-on: ubuntu-latest
     needs: ssh_to_azure
     steps:
+      - uses: actions/checkout@v3
+
+      - name: Copy repository to Azure VM
+        run: |
+          mkdir -p /home/runner/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tee /home/runner/.ssh/id_rsa > /dev/null
+          chmod 600 /home/runner/.ssh/id_rsa
+          scp -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
+        env:
+          SSH_CMD: "sudo -s"
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
         with:
@@ -82,7 +87,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-            ssh-agent bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY") && ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd /home/${{ secrets.SSH_USERNAME }}/repository && docker-compose build && docker-compose up -d"'
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            cd /home/${{ secrets.SSH_USERNAME }}/repository
+            ls -la
+            docker-compose build
+            docker-compose up -d
