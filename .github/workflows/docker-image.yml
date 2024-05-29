@@ -50,6 +50,9 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Add public key to authorized keys
+        run: |
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" >> /home/${{ secrets.SSH_USERNAME }}/.ssh/authorized_keys
 
   ssh_to_azure:
     name: SSH to Azure VM
