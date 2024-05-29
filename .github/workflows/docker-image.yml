@@ -78,18 +78,14 @@ jobs:
           echo "${{ secrets.SSH_PUBLIC_KEY }}" >> /home/runner/.ssh/authorized_keys
           chmod 600 /home/runner/.ssh/id_rsa
           chmod 644 /home/runner/.ssh/authorized_keys
-          scp -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository_temp
-          ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "sudo mkdir -p /home/${{ secrets.SSH_USERNAME }}/repository && sudo mv /home/${{ secrets.SSH_USERNAME }}/repository_temp/* /home/${{ secrets.SSH_USERNAME }}/repository/ && sudo rm -rf /home/${{ secrets.SSH_USERNAME }}/repository_temp"
+      - name: Create target directory on Azure VM
+        run: |
+          ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p /home/${{ secrets.SSH_USERNAME }}/repository_temp"
 
-      - name: SSH to Azure VM and Build Docker Compose
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd /home/${{ secrets.SSH_USERNAME }}/repository
-            ls -la
-            docker-compose build
-            docker-compose up -d
+      - name: Copy repository to Azure VM
+        run: |
+          scp -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository_temp
+
+      - name: Move files to final destination
+        run: |
+          ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "sudo mkdir -p /home/${{ secrets.SSH_USERNAME }}/repository && sudo mv /home/${{ secrets.SSH_USERNAME }}/repository_temp/* /home/${{ secrets.SSH_USERNAME }}/repository/ && sudo rm -rf /home/${{ secrets.SSH_USERNAME }}/repository_temp"
