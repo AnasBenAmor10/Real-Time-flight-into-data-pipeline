@@ -89,8 +89,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            sudo -s
             cd /home/${{ secrets.SSH_USERNAME }}/repository
-            cp / .
+            ls -la 
             docker-compose build
             docker-compose up -d
