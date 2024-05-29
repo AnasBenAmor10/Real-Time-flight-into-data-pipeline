@@ -72,7 +72,27 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Copy repository to Azure VM
-        run: scp -r ./* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          source: "./*"
+          target: "/home/${{ secrets.SSH_USERNAME }}/repository"
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEBUG: true
+          SSH_CMD: "sudo -s"
+
+      - name: SSH to Azure VM and Build Docker Compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /home/${{ secrets.SSH_USERNAME }}/repository
+            ls -la 
+            docker-compose build
+            docker-compose up -d
