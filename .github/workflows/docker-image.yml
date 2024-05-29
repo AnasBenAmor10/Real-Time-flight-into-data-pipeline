@@ -73,11 +73,10 @@ jobs:
 
       - name: Copy repository to Azure VM
         run: |
-          mkdir -p /home/runner/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          sudo scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
-
+          sudo mkdir -p /home/runner/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | sudo tee /home/runner/.ssh/id_rsa > /dev/null
+          sudo chmod 600 /home/runner/.ssh/id_rsa
+          sudo scp -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
         with:
