@@ -90,6 +90,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/${{ secrets.SSH_USERNAME }}/repository
-            cp ../docker-compose.yml .
+            cp ../../docker-compose.yml .
             docker-compose build
             docker-compose up -d
