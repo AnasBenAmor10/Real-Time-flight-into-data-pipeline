@@ -68,15 +68,17 @@ jobs:
     name: Deploy Docker Compose to Azure VM
     runs-on: ubuntu-latest
     needs: ssh_to_azure
+    env:
+      SSH_CMD:"sudo -s"
     steps:
       - uses: actions/checkout@v3
 
       - name: Copy repository to Azure VM
         run: |
-          sudo mkdir -p /home/runner/.ssh
-          sudo echo "${{ secrets.SSH_PRIVATE_KEY }}" | sudo tee /home/runner/.ssh/id_rsa > /dev/null
-          sudo chmod 600 /home/runner/.ssh/id_rsa
-          sudo scp -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
+          mkdir -p /home/runner/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tee /home/runner/.ssh/id_rsa > /dev/null
+          chmod 600 /home/runner/.ssh/id_rsa
+          scp -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa -r $GITHUB_WORKSPACE/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
         with:
