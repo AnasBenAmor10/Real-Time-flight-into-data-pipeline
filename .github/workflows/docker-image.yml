@@ -82,6 +82,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
         env:
           DEBUG: true
+          SSH_CMD: "sudo -s"
 
       - name: SSH to Azure VM and Build Docker Compose
         uses: appleboy/ssh-action@master
