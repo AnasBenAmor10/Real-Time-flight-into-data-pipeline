@@ -74,8 +74,8 @@ jobs:
       - name: Copy repository to Azure VM
         uses: appleboy/scp-action@v0.1.7
         with:
-          source: ./
-          target: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/repository
+          source: "./*"
+          target: "/home/${{ secrets.SSH_USERNAME }}/repository"
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
