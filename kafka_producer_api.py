@@ -3,7 +3,6 @@ from kafka import KafkaProducer
 import json
 import time
 from datetime import datetime
-from dotenv import load_dotenv
 import os
 
 
@@ -12,9 +11,8 @@ bootstrap_servers = 'localhost:9093'
 
 # Create a Kafka producer
 producer = KafkaProducer(bootstrap_servers=bootstrap_servers, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-# Api airtraffic flight 
-load_dotenv()
-api_key = os.getenv("api_key")
+# Api airtraffic flight
+api_key = "43f73f5a-f718-4c51-b41f-dd9bf2d1574b"
 base_url = 'https://airlabs.co/api/v9/'
 endpoint = 'flights'
 #Kafka Topic
