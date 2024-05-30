@@ -2,9 +2,11 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: 
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches: 
+      - main
 
 permissions:
   id-token: write
@@ -24,9 +26,6 @@ jobs:
     needs: checkout
     continue-on-error: true
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with: 
@@ -69,7 +68,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: ssh_to_azure
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Copy repository to Azure VM
         run: |
@@ -78,6 +78,7 @@ jobs:
           echo "${{ secrets.SSH_PUBLIC_KEY }}" >> /home/runner/.ssh/authorized_keys
           chmod 600 /home/runner/.ssh/id_rsa
           chmod 644 /home/runner/.ssh/authorized_keys
+
       - name: Create target directory on Azure VM
         run: |
           ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p /home/${{ secrets.SSH_USERNAME }}/repository_temp"
@@ -89,6 +90,7 @@ jobs:
       - name: Move files to final destination
         run: |
           ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "sudo mkdir -p /home/${{ secrets.SSH_USERNAME }}/repository && sudo rsync -avh /home/${{ secrets.SSH_USERNAME }}/repository_temp/ /home/${{ secrets.SSH_USERNAME }}/repository/ && sudo rm -rf /home/${{ secrets.SSH_USERNAME }}/repository_temp"
+
       - name: Install Docker on Azure VM
         run: |
           ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
@@ -102,29 +104,14 @@ jobs:
             sudo systemctl enable docker
             sudo systemctl start docker
 
-      - name: Install Docker Engine
-        run: |
-             ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-             # Add Docker's official GPG key:
-             sudo apt-get update
-             sudo apt-get install ca-certificates curl
-             sudo install -m 0755 -d /etc/apt/keyrings
-             sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-             sudo chmod a+r /etc/apt/keyrings/docker.asc
-             
-             echo \
-                "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-                $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-                sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-                sudo apt-get update
-             sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-
-             
-      - name: Run Docker Compose
+      - name: Install Docker Compose
         run: |
           ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            newgrp docker
-            cd /home/${{ secrets.SSH_USERNAME }}/repository
-            docker-compose build
-            docker-compose up -d
+            sudo apt-get update
+            sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            sudo apt-get update
+            sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
