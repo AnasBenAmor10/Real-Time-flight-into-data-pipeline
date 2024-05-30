@@ -95,6 +95,7 @@ services:
       
   spark-master:
     build: .   #Build image Docker Via Docker file in the same repo
+    container_name: spark-master
     command: bin/spark-class org.apache.spark.deploy.master.Master  #Lunch Spark Master
     ports:
       - "9090:8080"  # 8080 Port of Container Spark Master and 9090 Port of Hote
@@ -108,6 +109,7 @@ services:
 
   spark-worker-1:
     build: .
+    container_name: spark-worker-1
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077  # Lunch Spark Worker
     depends_on:
       - spark-master  #Spark master should be lunch before Spark worker 
