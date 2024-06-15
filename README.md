@@ -77,7 +77,7 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 
 ## Final result 
 > [!NOTE]
-> You can access our project deployed in the Azure cloud via the domain name anasbenamor.me. However, due to payment reasons, the VM is currently stopped.
+> You can access our project deployed in the Azure cloud via the domain name [a link](anasbenamor.me). However, due to payment reasons, the VM is currently stopped.
 
 
 Let us now focus on the graphs developed during the data visualization process. After consulting aviation experts and airport administrators, we have chosen to divide our dashboard into three sections: airport information, flight information, and aircraft information.
