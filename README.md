@@ -75,7 +75,11 @@ To ensure seamless operation and management, our Real-time-flight-into-data-pipe
 - Import export.ndjson from kibana folder which is in my repo 
 - Open dashboard
 
-## Final result
+## Final result 
+> [!NOTE]
+> You can access our project deployed in the Azure cloud via the domain name anasbenamor.me. However, due to payment reasons, the VM is currently stopped.
+
+
 Let us now focus on the graphs developed during the data visualization process. After consulting aviation experts and airport administrators, we have chosen to divide our dashboard into three sections: airport information, flight information, and aircraft information.
 ### Airport Information
 For this section of the dashboard, we focused on information useful for airport administrators, notably the total number of flights related to that airport and the flow of departures and arrivals. The figure above shows an overview for all airports, but the available filters allow selecting a specific airport or region.
@@ -85,7 +89,7 @@ For this section of the dashboard, we focused on information useful for airport 
 ### Flight Information
 For this part of the dashboard, and following the advice of experts regarding the necessary information, we chose to visualize on the map the position of aircraft, their departure and arrival airports sorted by their speeds or altitudes as needed. Then, on the left, we have for each type of aircraft, the types of routes it operates. We notice that the larger the aircraft, the more capable it is of performing long-haul flights. Similarly, we can see on the right side of the drawing, the most frequent flights by geographical region. This approach provides the most information possible about the nature of flights, their frequencies, and the type of aircraft that operates them.
 
-![Flight-information](images/Flight-information.png)
+![Flight-information](images/Flight-information.jpeg)
 
 ### Aircraft Information
 Finally, for the section related to the aircraft itself, using the data available on the API, we can determine the average and maximum speeds of aircraft as well as their speeds relative to their altitudes to ultimately identify the fastest aircraft and rank them in descending order.
